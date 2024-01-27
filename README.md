@@ -1,41 +1,92 @@
-# ICP (Iterative Closest Point) Alignment
+# Iterative Closest Point (ICP) Alignment - README
 
-## Task Overview
+## Introduction
+This repository contains the code for aligning two point clouds using the Iterative Closest Point (ICP) algorithm. The project consists of two main tasks.
 
-### a) Part 1: Demo Point Clouds
-In this part, the task involves aligning two point clouds (source and target) using the Iterative Closest Point (ICP) algorithm. Demo point clouds provided by Open3D are loaded and aligned using a custom ICP implementation. The code includes a function, `draw_registration_result`, for visualizing the registration results. The final 4x4 homogeneous transformation matrix obtained after the ICP refinement is used to transform and visualize the source point cloud aligned with the target.
+### Task 1 (2pt)
+Aligning demo point clouds provided by Open3D using a custom implementation of the ICP algorithm.
 
-#### Implementation Process:
-1. The `extract_sift_features` function reads the images in grayscale and extracts SIFT features (keypoints and descriptors).
-2. The `match_features` function matches query descriptors with database descriptors using the Brute-Force matcher, applying a ratio test to filter good matches.
-3. Directory paths for query and database images are provided.
-4. Results are stored in a list called `results` containing dictionaries with information about the query image, database image, and similarity score.
-5. The script displays the top 5 matching results for each query image.
+### Task 2 (2pt)
+Aligning two point clouds from the KITTI dataset using the same ICP implementation as in Task 1. Comparing the results between Task 1 and Task 2.
 
-### b) Part 2: KITTI Dataset Point Clouds
-In this part, two point clouds from the KITTI dataset are given, and the alignment is repeated using the custom ICP implementation. The results from Part 1 are compared with the results from Part 2.
+## Code Structure
 
-#### Comparison and Analysis:
-- The alignment results from Part 2 are evaluated and compared with those from Part 1.
-- The visualizations for both parts are provided.
-
-## Code Implementation
-
+### Task 1: Aligning Open3D Demo Point Clouds
 ```python
-# Place the provided code here
+import open3d as o3d
+import copy
+
+demo_icp_pcds = o3d.data.DemoICPPointClouds()
+source = o3d.io.read_point_cloud(demo_icp_pcds.paths[0])
+target = o3d.io.read_point_cloud(demo_icp_pcds.paths[1])
+
+# Write your ICP implementation here
+
+def draw_registration_result(source, target, transformation):
+    """
+    param: source - source point cloud
+    param: target - target point cloud
+    param: transformation - 4 X 4 homogeneous transformation matrix
+    """
+    # Visualization code
 ```
 
+### Task 2: Aligning KITTI Point Clouds
+```python
+import open3d as o3d
+import copy
+
+# Load point clouds from the KITTI dataset (data/Task2 folder)
+source_kitti = o3d.io.read_point_cloud("data/Task2/source_kitti.pcd")
+target_kitti = o3d.io.read_point_cloud("data/Task2/target_kitti.pcd")
+
+# Write your ICP implementation here
+
+def draw_registration_result_kitti(source, target, transformation):
+    """
+    param: source - source point cloud
+    param: target - target point cloud
+    param: transformation - 4 X 4 homogeneous transformation matrix
+    """
+    # Visualization code
+```
+
+## Implementation Details
+### ICP Algorithm
+- Loads two point clouds (source and target).
+- Initializes the ICP function with default parameters and copies of the source and target point clouds.
+- Initializes the cumulative transformation matrix as the identity matrix.
+- Computes the mean of target points and extracts the target points as a NumPy array.
+- Iterates over a specified number of iterations.
+- Builds a KD-tree from the current source point cloud.
+- For each point in the target cloud, finds the nearest neighbor in the source cloud and collects the corresponding source points.
+- Computes the transformation using Singular Value Decomposition (SVD).
+- Updates the cumulative transformation matrix.
+- Applies the new transformation to the source point cloud.
+- Calculates the Euclidean norm of the difference between the new transformation and the identity matrix.
+- Checks for convergence by comparing the change in transformation with a specified tolerance.
+
+### Visualization
+- Visualizes the transformed source and original target point clouds using Open3D.
+- Plots and displays the convergence over iterations.
+
 ## Results and Visualizations
+### Task 1
+- [ICP End Result View 1](path/to/figure3.png)
+- [ICP End Result View 2](path/to/figure4.png)
 
-### Part 1: Demo Point Clouds
-- Results display the top 5 matching database images for each query.
-- Visualizations show the aligned source point cloud with the original target point cloud.
-
-### Part 2: KITTI Dataset Point Clouds
-- Comparison and analysis of the alignment results with visualizations.
-- Evaluation of the success of point cloud alignment.
+### Task 2
+- [Pre-ICP](path/to/figure5.png)
+- [Post-ICP](path/to/figure6.png)
 
 ## Conclusion
-The ICP algorithm is implemented and applied to align point clouds from both demo datasets and the KITTI dataset. The custom implementation ensures accurate alignment, and the visualizations provide insights into the effectiveness of the algorithm. Comparison between different datasets helps evaluate the robustness of the ICP approach in aligning diverse point cloud scenes.
+The implemented ICP algorithm successfully aligns point clouds in both Task 1 and Task 2. The visualizations demonstrate the effectiveness of the alignment process.
 
-**Author:** Ashiq Rahman Anwar Batcha, NetID: aa10277
+## Usage
+To run the code, follow the instructions in the provided Python scripts for Task 1 and Task 2.
+
+Note: Using an ICP API in existing libraries instead of the provided implementation will result in a reduced score.
+
+## Author
+- Name: Ashiq Rahman Anwar Batcha
+- NetID: aa10277
